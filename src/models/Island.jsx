@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 /* eslint-disable no-const-assign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unknown-property */
@@ -15,7 +18,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import islandScene from '../assets/3d/island.glb'
 import { a } from '@react-spring/three'
 
-const Island = ({isRotating, setIsRotating, ...props}) => {
+const Island = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
 const {gl, viewport} = useThree();
 const islandRef = useRef();
 const { nodes, materials } = useGLTF(islandScene)
@@ -40,19 +43,79 @@ const handlePointerUp = (e) => {
   
 }
 
-const handlePointerMove = (e) => {
+const handlePointerMove = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (isRotating) {
+      // If rotation is enabled, calculate the change in clientX position
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+
+      // calculate the change in the horizontal position of the mouse cursor or touch input,
+      // relative to the viewport's width
+      const delta = (clientX - lastX.current) / viewport.width;
+
+      // Update the island's rotation based on the mouse/touch movement
+      islandRef.current.rotation.y += delta * 0.01 * Math.PI;
+
+      // Update the reference for the last clientX position
+      lastX.current = clientX;
+
+      // Update the rotation speed
+      rotationSpeed.current = delta * 0.01 * Math.PI;
+    }
+  
+}
+
+// Handle keydown events
+const handleKeyDown = (event) => {
+  if (event.key === "ArrowLeft") {
+    if (!isRotating) setIsRotating(true);
+
+    islandRef.current.rotation.y += 0.005 * Math.PI;
+    rotationSpeed.current = 0.007;
+  } else if (event.key === "ArrowRight") {
+    if (!isRotating) setIsRotating(true);
+
+    islandRef.current.rotation.y -= 0.005 * Math.PI;
+    rotationSpeed.current = -0.007;
+  }
+};
+
+// Handle keyup events
+const handleKeyUp = (event) => {
+  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+    setIsRotating(false);
+  }
+};
+
+// Touch events for mobile devices
+const handleTouchStart = (e) => {
   e.stopPropagation();
   e.preventDefault();
-  
-  if(isRotating) {
+  setIsRotating(true);
 
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  lastX.current = clientX;
+}
+
+const handleTouchEnd = (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  setIsRotating(false);
+}
+
+const handleTouchMove = (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  if (isRotating) {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const delta = (clientX - lastX.current) / viewport.width;
-    islandRef.current.rotation.y += delta * 0.01 * Math.PI
+
+    islandRef.current.rotation.y += delta * 0.01 * Math.PI;
     lastX.current = clientX;
-    rotationSpeed.current += delta * 0.01 * Math.PI;
+    rotationSpeed.current = delta * 0.01 * Math.PI;
   }
-  
 }
 
 useFrame(() => {
@@ -111,22 +174,22 @@ useEffect(() => {
   canvas.addEventListener("pointerdown", handlePointerDown);
   canvas.addEventListener("pointerup", handlePointerUp);
   canvas.addEventListener("pointermove", handlePointerMove);
-  // window.addEventListener("keydown", handleKeyDown);
-  // window.addEventListener("keyup", handleKeyUp);
-  // canvas.addEventListener("touchstart", handleTouchStart);
-  // canvas.addEventListener("touchend", handleTouchEnd);
-  // canvas.addEventListener("touchmove", handleTouchMove);
+  window.addEventListener("keydown", handleKeyDown);
+  window.addEventListener("keyup", handleKeyUp);
+  canvas.addEventListener("touchstart", handleTouchStart);
+  canvas.addEventListener("touchend", handleTouchEnd);
+  canvas.addEventListener("touchmove", handleTouchMove);
 
   // Remove event listeners when component unmounts
   return () => {
     canvas.removeEventListener("pointerdown", handlePointerDown);
     canvas.removeEventListener("pointerup", handlePointerUp);
     canvas.removeEventListener("pointermove", handlePointerMove);
-    // window.removeEventListener("keydown", handleKeyDown);
-    // window.removeEventListener("keyup", handleKeyUp);
-    // canvas.removeEventListener("touchstart", handleTouchStart);
-    // canvas.removeEventListener("touchend", handleTouchEnd);
-    // canvas.removeEventListener("touchmove", handleTouchMove);
+    window.removeEventListener("keydown", handleKeyDown);
+    window.removeEventListener("keyup", handleKeyUp);
+    canvas.removeEventListener("touchstart", handleTouchStart);
+    canvas.removeEventListener("touchend", handleTouchEnd);
+    canvas.removeEventListener("touchmove", handleTouchMove);
   }
 },[gl,handlePointerDown,handlePointerMove,handlePointerUp])
 
