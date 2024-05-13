@@ -64,23 +64,23 @@ const Home = () => {
           {/* <pointLight /> */}
           <hemisphereLight skyColor="#b1e1ff" graoundColor="#fff"/>
 
-          <Island 
+          {/* <Island 
            position={islandPosition}
            rotation={[0.1, 4.7077, 0]}
            scale={islandScale}
            isRotating={isRotating}
            setIsRotating={setIsRotating}
-            /> 
+            />  */}
 
           <Bird />
           <Cloudsky />
-          {/* <FoxIsland 
+          <FoxIsland 
           position={islandPosition}
           rotation={[11.1, 6.3, 38]}
           scale={islandScale}
           isRotating={isRotating}
           setIsRotating={setIsRotating}
-          /> */}
+          />
           <Plane
             isRotating={isRotating}
             position={planePosition}
