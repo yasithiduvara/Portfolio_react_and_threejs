@@ -1,28 +1,44 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unknown-property */
  import { Canvas } from "@react-three/fiber"
 import { Suspense, useState } from "react"
 import Loader from "../components/Loader"
 // import Island from "../models/Island"
-import FoxIsland from "../models/FoxIsland"
+// import FoxIsland from "../models/FoxIsland"
 import Cloudsky from "../models/Cloudsky"
 import Bird from "../models/Bird"
 import Plane from "../models/Plane"
 import Island from "../models/Island"
+import HomeInfo from "../components/HomeInfo"
 
  
- {/* <div className=" absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
-        POPUP
-      </div> */}
+ 
 
 const Home = () => {
 
   const [isRotating, setIsRotating] = useState(false);
+  const [currentStage, setCurrentStage] = useState(1);
+
   
+  // const adjustIslandForScreenSize = () => {
+  //   let screenScale, screenPosition;
+
+  //   if (window.innerWidth < 768) {
+  //     screenScale = [3, 3, 3];
+  //     screenPosition = [0, -6.5, -43.4];
+  //   } else {
+  //     screenScale = [1, 1, 1];
+  //     screenPosition = [0, -6.5, -43.4];
+  //   }
+
+  //   return [screenScale, screenPosition];
+  // };
+
   const adjustIslandForScreenSize = () => {
     let screenScale, screenPosition;
 
     if (window.innerWidth < 768) {
-      screenScale = [3, 3, 3];
+      screenScale = [0.9, 0.9, 0.9];
       screenPosition = [0, -6.5, -43.4];
     } else {
       screenScale = [1, 1, 1];
@@ -54,6 +70,9 @@ const Home = () => {
 
   return (
     <section className="w-full h-screen relative bg-blue-900">
+      <div className=" absolute top-28 left-0 right-0 z-10 flex items-center justify-center">
+        {currentStage && <HomeInfo currentStage={currentStage} /> }
+      </div>
      <Canvas 
         className={`w-full h-screen bg-transparent ${isRotating ? 'cursor-grabbing': 'cursor-grab'}`}
         camera={{near: 0.1, far: 1000}}>
@@ -62,25 +81,28 @@ const Home = () => {
           <directionalLight position={[1,1,1]} intensity={5}/>
           <ambientLight intensity={0.8}/>
           {/* <pointLight /> */}
-          <hemisphereLight skyColor="#b1e1ff" graoundColor="#fff"/>
+          {/* <hemisphereLight skyColor="#b1e1ff" graoundColor="#fff"/> */}
 
-          {/* <Island 
+          <Island 
            position={islandPosition}
            rotation={[0.1, 4.7077, 0]}
            scale={islandScale}
            isRotating={isRotating}
            setIsRotating={setIsRotating}
-            />  */}
+           setCurrentStage={setCurrentStage}
+            /> 
 
           <Bird />
-          <Cloudsky />
-          <FoxIsland 
+          <Cloudsky 
+            isRotating={isRotating}
+          />
+          {/* <FoxIsland 
           position={islandPosition}
           rotation={[11.1, 6.3, 38]}
           scale={islandScale}
           isRotating={isRotating}
           setIsRotating={setIsRotating}
-          />
+          /> */}
           <Plane
             isRotating={isRotating}
             position={planePosition}
