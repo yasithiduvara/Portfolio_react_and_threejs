@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unknown-property */
 import { useGLTF } from "@react-three/drei"
-import skyScene from '../assets/3d/sky.glb'
+import skyScene from '../assets/3d/sifiSky.glb'
 import { useRef } from "react"
 import { useFrame } from "@react-three/fiber";
 
@@ -16,7 +16,7 @@ const Cloudsky = ({ isRotating }) => {
   })
 
   return (
-    <mesh ref={skyRef}>
+    <mesh ref={skyRef} scale={[8, 8, 8]}>
         <primitive object={sky.scene} />
     </mesh>
   )
