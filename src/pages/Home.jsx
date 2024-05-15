@@ -96,7 +96,7 @@ const Home = () => {
             setCurrentStage={setCurrentStage}
           />
 
-          <Bird />
+          {/* <Bird /> */}
           <Cloudsky isRotating={isRotating} />
           {/* <FoxIsland 
           position={islandPosition}
@@ -105,12 +105,12 @@ const Home = () => {
           isRotating={isRotating}
           setIsRotating={setIsRotating}
           /> */}
-          <Plane
+          {/* <Plane
             isRotating={isRotating}
             position={planePosition}
             scale={planeScale}
             rotation={[0, 20, 0]}
-          />
+          /> */}
         </Suspense>
       </Canvas>
     </section>
